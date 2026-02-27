@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Morse Elite Clock</title>
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(-45deg, #eef2f7, #d9e4f5, #f5f7fa, #e3edf7);
+  background-size: 400% 400%;
+  animation: gradientMove 12s ease infinite;
+  font-family: monospace;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.clock {
+  backdrop-filter: blur(15px);
+  background: rgba(255,255,255,0.6);
+  padding: 60px 80px;
+  border-radius: 30px;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.08);
+  text-align: center;
+  transition: 0.4s ease;
+}
+
+.hour, .minute {
+  font-size: 65px;
+  letter-spacing: 10px;
+  margin: 20px 0;
+  transition: 0.4s ease;
+}
+
+.ampm {
+  font-size: 28px;
+  letter-spacing: 6px;
+  opacity: 0.8;
+  margin-bottom: 25px;
+}
+
+.secondsBar {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.block {
+  width: 20px;
+  height: 8px;
+  background: #111;
+  opacity: 0.15;
+  border-radius: 10px;
+  transition: 0.4s ease;
+}
+
+.block.active {
+  opacity: 1;
+  transform: scale(1.2);
+}
+</style>
+</head>
+
+<body>
+
+<div class="clock">
+  <div id="hour" class="hour"></div>
+  <div id="minute" class="minute"></div>
+  <div id="ampm" class="ampm"></div>
+  <div class="secondsBar" id="secondsBar"></div>
+</div>
+
+<script>
+const morseMap = {
+  "0": "-----",
+  "1": ".----",
+  "2": "..---",
+  "3": "...--",
+  "4": "....-",
+  "5": ".....",
+  "6": "-....",
+  "7": "--...",
+  "8": "---..",
+  "9": "----.",
+  "A": ".-",
+  "M": "--",
+  "P": ".--."
+};
+
+function convertToMorse(text) {
+  return text.split("").map(c => morseMap[c] || "").join(" ");
+}
+
+// Create 6 blocks (one per 10 seconds)
+const secondsBar = document.getElementById("secondsBar");
+for (let i = 0; i < 6; i++) {
+  const block = document.createElement("div");
+  block.classList.add("block");
+  secondsBar.appendChild(block);
+}
+
+function updateClock() {
+  const now = new Date();
+
+  let hours = now.getHours();
+  const minutes = now.getMinutes();
+  const seconds = now.getSeconds();
+  const ampm = hours >= 12 ? "PM" : "AM";
+
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+
+  const hourStr = String(hours).padStart(2, "0");
+  const minuteStr = String(minutes).padStart(2, "0");
+
+  document.getElementById("hour").textContent =
+    convertToMorse(hourStr);
+
+  document.getElementById("minute").textContent =
+    convertToMorse(minuteStr);
+
+  document.getElementById("ampm").textContent =
+    "( " + convertToMorse(ampm) + " )";
+
+  // Seconds progress (changes every 10 sec)
+  const activeBlocks = Math.floor(seconds / 10) + 1;
+
+  const blocks = document.querySelectorAll(".block");
+  blocks.forEach((block, index) => {
+    block.classList.toggle("active", index < activeBlocks);
+  });
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+</script>
+
+</body>
+</html>
