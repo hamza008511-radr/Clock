@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.hamza008511_radr.twa",
+        "sha256_cert_fingerprints": ["E4:C2:16:BD:8E:89:63:59:27:67:78:7A:14:7E:03:D4:C9:93:36:20:16:8B:86:75:96:06:A9:B5:83:6B:7C:CE"]
+      }
+    }]
